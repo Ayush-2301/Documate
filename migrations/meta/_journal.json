@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1711617342586,
+      "tag": "0000_parallel_mandroid",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1711617851679,
+      "tag": "0001_volatile_anita_blake",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1711618036286,
+      "tag": "0002_jittery_selene",
+      "breakpoints": true
+    }
+  ]
+}
