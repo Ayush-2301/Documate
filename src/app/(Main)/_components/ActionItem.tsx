@@ -1,6 +1,5 @@
 "use client";
-import { useEffect, useContext } from "react";
-import { AuthContext } from "./providers/auth-provider";
+import { useEffect, useContext, useState } from "react";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -9,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "./spinner";
+import { Spinner } from "@/components/spinner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,28 +28,32 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import googleIcon from "../../public/google.svg";
+import { Session } from "@supabase/supabase-js";
 
-export function UserProfile() {
+export function ActionItem() {
   const params = useSearchParams();
   const next = params.get("next") || "";
   const router = useRouter();
   const supabase = supabaseBrowser();
-  const {
-    isLoading,
-    setIsLoading,
-    isAuthenticated,
-    setIsAuthenticated,
-    setSession,
-    session,
-  } = useContext(AuthContext);
-  const handleLoginOAuth = (provider: "google") => {
-    supabase.auth.signInWithOAuth({
-      provider,
-      options: {
-        redirectTo: location.origin + "/auth/callback?next=" + next,
-      },
-    });
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [session, setSession] = useState<Session | null>(null);
+  //   const {
+  //     isLoading,
+  //     setIsLoading,
+  //     isAuthenticated,
+  //     setIsAuthenticated,
+  //     setSession,
+  //     session,
+  //   } = useContext(AuthContext);
+  //   const handleLoginOAuth = (provider: "google") => {
+  //     supabase.auth.signInWithOAuth({
+  //       provider,
+  //       options: {
+  //         redirectTo: location.origin + "/auth/callback?next=" + next,
+  //       },
+  //     });
+  //   };
   useEffect(() => {
     const setUser = async () => {
       setIsLoading(true);
@@ -112,7 +115,7 @@ export function UserProfile() {
   return (
     <div className="flex justify-center items-center">
       {isLoading && <Spinner />}
-      {!isAuthenticated && !isLoading && (
+      {/* {!isAuthenticated && !isLoading && (
         <>
           <Dialog>
             <DialogTrigger asChild>
@@ -142,7 +145,7 @@ export function UserProfile() {
             </DialogContent>
           </Dialog>
         </>
-      )}
+      )} */}
       {isAuthenticated && !isLoading && (
         <>
           <Button

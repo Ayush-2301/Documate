@@ -1,3 +1,4 @@
+/* trunk-ignore-all(prettier) */
 import {
   boolean,
   pgTable,
@@ -5,6 +6,7 @@ import {
   text,
   index,
   timestamp,
+  AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 export const documents = pgTable(
@@ -13,16 +15,20 @@ export const documents = pgTable(
     id: uuid("id").defaultRandom().primaryKey().notNull(),
     userID: uuid("userID").notNull(),
     title: text("title").notNull(),
-    isArchived: boolean("isArchived"),
-    parentDocument: uuid("parentDocument").references(() => documents.id),
+    isArchived: boolean("isArchived").notNull(),
+    parentDocument: uuid("parentDocument").references(
+      (): AnyPgColumn => documents.id
+    ),
     content: text("content"),
     coverImage: text("coverImage"),
     icon: text("icon"),
-    isPublished: boolean("isPublished"),
+    isPublished: boolean("isPublished").notNull(),
     createdAt: timestamp("createdAt", {
       withTimezone: true,
       mode: "string",
-    }),
+    })
+      .defaultNow()
+      .notNull(),
   },
   (table) => {
     return {

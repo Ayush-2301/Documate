@@ -22,6 +22,20 @@
       "when": 1711618036286,
       "tag": "0002_jittery_selene",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1711739260938,
+      "tag": "0003_shiny_phil_sheldon",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1715757072651,
+      "tag": "0004_yummy_rumiko_fujikawa",
+      "breakpoints": true
     }
   ]
 }

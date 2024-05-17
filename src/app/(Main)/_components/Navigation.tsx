@@ -1,12 +1,35 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
+import {
+  ChevronsLeft,
+  MenuIcon,
+  Plus,
+  PlusCircle,
+  Search,
+  Settings,
+  Trash,
+} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
-
+import { UserItem } from "./UserItem";
+import { supabaseBrowser } from "@/lib/supabase/browser";
+import Item from "./Item";
+import { createDocuments } from "@/lib/supabase/queries";
+import { toast } from "sonner";
+import { Document } from "@/lib/supabase/supabase.types";
+import { Spinner } from "@/components/spinner";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import DocumentList from "./DocumentList";
+import TrashBox from "./TrashBox";
 const Navigation = () => {
+  const supabase = supabaseBrowser();
+  const router = useRouter();
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isReziableRef = useRef(false);
@@ -14,6 +37,7 @@ const Navigation = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
+  // const [documents, setDocuments] = useState<Document[] | null>();
 
   useEffect(() => {
     if (isMobile) collapse();
@@ -25,7 +49,43 @@ const Navigation = () => {
       collapse();
     }
   }, [pathname, isMobile]);
+  // useEffect(() => {
+  //   async function getData() {
+  //     setLoading(true);
+  //     const { data, error } = await getDocuments();
+  //     setLoading(false);
+  //     setDocuments(data);
+  //   }
+  //   getData();
+  // }, []);
+  useEffect(() => {
+    const channel = supabase
+      .channel("realtime-documents")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "documents",
+        },
+        () => {
+          router.refresh();
+        }
+      )
+      .subscribe();
 
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, router]);
+  const onCreate = async () => {
+    try {
+      await createDocuments({ title: "Untitled" });
+      toast.success("Document created successfully");
+    } catch (error) {
+      toast.error("Error creating document");
+    }
+  };
   const handleMouseDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -100,10 +160,30 @@ const Navigation = () => {
           <ChevronsLeft className=" text-muted-foreground" />
         </Button>
         <div>
-          <p>Action Items</p>
+          <UserItem />
+          <Item label="Search" icon={Search} isSearch onClick={() => {}} />
+          <Item label="Setting" icon={Settings} onClick={() => {}} />
+          <Item
+            onClick={onCreate}
+            label="New Page"
+            icon={PlusCircle}
+            level={0}
+          />
         </div>
         <div className="mt-4">
-          <p>Documents</p>
+          <DocumentList />
+          <Item onClick={onCreate} label="Add a Page" icon={Plus} />
+          <Popover>
+            <PopoverTrigger className="w-full mt-4">
+              <Item label="Trash" icon={Trash} />
+            </PopoverTrigger>
+            <PopoverContent
+              className="p-0 w-72"
+              side={isMobile ? "bottom" : "right"}
+            >
+              <TrashBox />
+            </PopoverContent>
+          </Popover>
         </div>
         <div
           onMouseDown={handleMouseDown}
@@ -119,7 +199,7 @@ const Navigation = () => {
           isMobile && "left-0 w-full"
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
+        <nav className="bg-transparent px-3 py-2 w-full m-1 md:ml-2 md:mt-3">
           {isCollapsed && (
             <MenuIcon
               role="button"

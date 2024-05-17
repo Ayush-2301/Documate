@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
-import db from "@/lib/supabase/db";
+import { Toaster } from "@/components/ui/sonner";
 export const metadata: Metadata = {
   title: "Documate",
   description: "The connected workspaces where better , faster work happens.",
@@ -25,6 +25,7 @@ export default function RootLayout({
           storageKey="documate-theme"
         >
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
