@@ -45,4 +45,52 @@ export const SearchCommand = () => {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        toggle();
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => {
+      document.removeEventListener("keydown", down);
+    };
+  }, [toggle]);
+  const onSelect = (id: string) => {
+    router.push(`/document/${id}`);
+    onClose();
+  };
+  if (!isMounted) {
+    return null;
+  }
+  return (
+    <CommandDialog open={isOpen} onOpenChange={onClose}>
+      <CommandInput
+        placeholder={`Search ${user?.user_metadata.full_name}'s Document...`}
+      />
+      <CommandList>
+        <CommandEmpty>No result found.</CommandEmpty>
+        <CommandGroup heading="Documents">
+          {documents?.map((document) => {
+            return (
+              <CommandItem
+                key={document.id}
+                value={`${document.id}-${document.title}`}
+                title={document.title}
+                onSelect={onSelect}
+              >
+                {document.icon ? (
+                  <p className="mr-2 text-[18x]">{document.icon}</p>
+                ) : (
+                  <File className="mr-2 h-4 w-4" />
+                )}
+                <span>{document.title}</span>
+              </CommandItem>
+            );
+          })}
+        </CommandGroup>
+      </CommandList>
+    </CommandDialog>
+  );
 };

@@ -10,16 +10,17 @@ import {
   Settings,
   Trash,
 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { UserItem } from "./UserItem";
+import { Navbar } from "./Navbar";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import Item from "./Item";
 import { createDocuments } from "@/lib/supabase/queries";
 import { toast } from "sonner";
-import { Document } from "@/lib/supabase/supabase.types";
-import { Spinner } from "@/components/spinner";
+import { useSettings } from "@/hooks/use-setting";
+import { useSearch } from "@/hooks/use-search";
 import {
   Popover,
   PopoverContent,
@@ -28,7 +29,10 @@ import {
 import DocumentList from "./DocumentList";
 import TrashBox from "./TrashBox";
 const Navigation = () => {
+  const settings = useSettings();
+  const search = useSearch();
   const supabase = supabaseBrowser();
+  const params = useParams();
   const router = useRouter();
   const pathname = usePathname();
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -49,15 +53,7 @@ const Navigation = () => {
       collapse();
     }
   }, [pathname, isMobile]);
-  // useEffect(() => {
-  //   async function getData() {
-  //     setLoading(true);
-  //     const { data, error } = await getDocuments();
-  //     setLoading(false);
-  //     setDocuments(data);
-  //   }
-  //   getData();
-  // }, []);
+
   useEffect(() => {
     const channel = supabase
       .channel("realtime-documents")
@@ -161,8 +157,8 @@ const Navigation = () => {
         </Button>
         <div>
           <UserItem />
-          <Item label="Search" icon={Search} isSearch onClick={() => {}} />
-          <Item label="Setting" icon={Settings} onClick={() => {}} />
+          <Item label="Search" icon={Search} isSearch onClick={search.onOpen} />
+          <Item label="Setting" icon={Settings} onClick={settings.onOpen} />
           <Item
             onClick={onCreate}
             label="New Page"
@@ -199,15 +195,19 @@ const Navigation = () => {
           isMobile && "left-0 w-full"
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full m-1 md:ml-2 md:mt-3">
-          {isCollapsed && (
-            <MenuIcon
-              role="button"
-              onClick={resetWidth}
-              className="h-6 w-6 text-muted-foreground"
-            />
-          )}
-        </nav>
+        {!!params.documentId ? (
+          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-3 py-2 w-full m-1 md:ml-2 md:mt-3">
+            {isCollapsed && (
+              <MenuIcon
+                role="button"
+                onClick={resetWidth}
+                className="h-6 w-6 text-muted-foreground"
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );

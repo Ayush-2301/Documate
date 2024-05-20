@@ -3,6 +3,7 @@ import { getSidebar } from "@/lib/supabase/queries";
 import { Document } from "@/lib/supabase/supabase.types";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
 import Item from "./Item";
 import { cn } from "@/lib/utils";
 import { FileIcon } from "lucide-react";
