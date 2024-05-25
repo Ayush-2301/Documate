@@ -1,13 +1,8 @@
 "use client";
-import { useEffect, useContext, useState } from "react";
-
-import Link from "next/link";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
 
 import { supabaseBrowser } from "@/lib/supabase/browser";
-import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/spinner";
 import {
   DropdownMenu,
@@ -19,42 +14,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import googleIcon from "../../public/google.svg";
 import { Session } from "@supabase/supabase-js";
 import { ChevronsLeftRight } from "lucide-react";
 
 export function UserItem() {
-  const params = useSearchParams();
-  const next = params.get("next") || "";
   const router = useRouter();
   const supabase = supabaseBrowser();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
-  //   const {
-  //     isLoading,
-  //     setIsLoading,
-  //     isAuthenticated,
-  //     setIsAuthenticated,
-  //     setSession,
-  //     session,
-  //   } = useContext(AuthContext);
-  //   const handleLoginOAuth = (provider: "google") => {
-  //     supabase.auth.signInWithOAuth({
-  //       provider,
-  //       options: {
-  //         redirectTo: location.origin + "/auth/callback?next=" + next,
-  //       },
-  //     });
-  //   };
   useEffect(() => {
     const setUser = async () => {
       setIsLoading(true);
