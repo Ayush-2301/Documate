@@ -183,9 +183,12 @@ const Item = ({
 };
 Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
   return (
-    <div style={{ paddingLeft: level ? `${level * 12 + 25}px` : "12px" }}>
-      <Skeleton className="h-4 w-4" />
-      <Skeleton className="h-4 w-[30%]" />
+    <div
+      style={{ paddingLeft: level ? `${level * 12 + 25}px` : "12px" }}
+      className="flex flex-col gap-y-2"
+    >
+      <Skeleton className="h-4 w-6" />
+      <Skeleton className="h-4 w-[50%]" />
     </div>
   );
 };

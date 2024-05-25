@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/sonner";
 import { ModalProvider } from "@/components/providers/modal-provider";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 export const metadata: Metadata = {
   title: "Documate",
   description: "The connected workspaces where better , faster work happens.",
@@ -18,17 +19,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          storageKey="documate-theme"
-        >
-          <ModalProvider />
-          {children}
-          <Toaster />
-        </ThemeProvider>
+        <EdgeStoreProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            storageKey="documate-theme"
+          >
+            <ModalProvider />
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </EdgeStoreProvider>
       </body>
     </html>
   );

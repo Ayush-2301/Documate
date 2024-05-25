@@ -58,7 +58,7 @@ export const SearchCommand = () => {
     };
   }, [toggle]);
   const onSelect = (id: string) => {
-    router.push(`/document/${id}`);
+    router.push(`/documents/${id}`);
     onClose();
   };
   if (!isMounted) {
@@ -76,7 +76,7 @@ export const SearchCommand = () => {
             return (
               <CommandItem
                 key={document.id}
-                value={`${document.id}-${document.title}`}
+                value={`${document.id}`}
                 title={document.title}
                 onSelect={onSelect}
               >

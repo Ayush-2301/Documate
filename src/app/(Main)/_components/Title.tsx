@@ -3,13 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Document } from "@/lib/supabase/supabase.types";
 import { useState, useRef, useEffect } from "react";
-import { update } from "@/lib/supabase/queries";
+import debouncedUpdate from "@/lib/debounceUpdateTitle";
 import { supabaseBrowser } from "@/lib/supabase/browser";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface TitleProps {
   initialData: Document;
 }
 export const Title = ({ initialData }: TitleProps) => {
+  const supabase = supabaseBrowser();
+  const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(initialData.title || "Untitled");
   const [isEditing, setIsEditing] = useState(false);
@@ -24,35 +27,39 @@ export const Title = ({ initialData }: TitleProps) => {
 
   const disableInput = () => {
     setIsEditing(false);
+    initialData.title = title;
   };
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    update({ id: initialData.id, title: title });
+    debouncedUpdate({ id: initialData.id, title: event.target.value });
   };
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") disableInput();
   };
-  //   useEffect(() => {
-  //     const channel = supabase
-  //       .channel("realtime-documents")
-  //       .on(
-  //         "postgres_changes",
-  //         {
-  //           event: "UPDATE",
-  //           schema: "public",
-  //           table: "documents",
-  //         },
-  //         (payload) => {
-  //           console.log(payload);
-  //         }
-  //       )
-  //       .subscribe();
+  useEffect(() => {
+    if (!isEditing) {
+      const channel = supabase
+        .channel("realtime-documents")
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "documents",
+          },
+          (payload) => {
+            setTitle(payload.new.title);
+          }
+        )
+        .subscribe();
 
-  //     return () => {
-  //       supabase.removeChannel(channel);
-  //     };
-  //   }, [supabase]);
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [supabase, isEditing]);
+
   return (
     <div className="flex items-center gap-x-1">
       {!!initialData.icon && <p>{initialData.icon}</p>}
@@ -73,9 +80,13 @@ export const Title = ({ initialData }: TitleProps) => {
           className="font-normal h-auto p-1 "
           size="sm"
         >
-          <span className="truncate">{initialData?.title}</span>
+          <span className="truncate">{initialData.title}</span>
         </Button>
       )}
     </div>
   );
+};
+
+Title.Skeleton = function TitleSkeleton() {
+  return <Skeleton className="h-6 w-16 rounded-md" />;
 };

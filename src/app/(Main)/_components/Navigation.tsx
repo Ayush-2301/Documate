@@ -190,13 +190,17 @@ const Navigation = () => {
       <div
         ref={navbarRef}
         className={cn(
-          "absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]",
-          isResetting && "transition-all ease-in-out",
+          "absolute top-0 z-[99999] left-60 w-[calc(100%-240px) overflow-hidden m-2 md:m-4 rounded-t-lg   ",
+          isResetting && "transition-all ease-in-out ",
           isMobile && "left-0 w-full"
         )}
       >
         {!!params.documentId ? (
-          <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+          <Navbar
+            isCollapsed={isCollapsed}
+            onResetWidth={resetWidth}
+            isMobile={isMobile}
+          />
         ) : (
           <nav className="bg-transparent px-3 py-2 w-full m-1 md:ml-2 md:mt-3">
             {isCollapsed && (

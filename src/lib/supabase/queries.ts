@@ -4,7 +4,6 @@ import db from "./db";
 import { Document } from "./supabase.types";
 import { supabaseServer } from "./server";
 import { eq, and, or, desc, asc, isNull } from "drizzle-orm";
-import { document } from "postcss";
 
 export const createDocuments = async ({
   title,
@@ -190,7 +189,7 @@ export const restore = async (
       .select()
       .from(documents)
       .where(eq(documents.id, id));
-    if (!existingDocument) throw new Error("Not Found");
+    if (!existingDocument[0]) throw new Error("Not Found");
 
     if (existingDocument[0].userId !== data.user.id)
       throw new Error("Unauthorized");
@@ -309,7 +308,6 @@ export const update = async ({
   isPublished?: boolean;
 }): Promise<{ data: Document | null; error: string | null }> => {
   try {
-    console.log("Updating");
     const supabase = supabaseServer();
     const updatedData = { id, title, content, coverImage, icon, isPublished };
     const { data, error } = await supabase.auth.getUser();
@@ -329,6 +327,60 @@ export const update = async ({
       .where(eq(documents.id, id))
       .returning();
     return { data: document[0], error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Something went wrong" };
+  }
+};
+
+export const removeIcon = async ({ id }: { id: string }) => {
+  try {
+    const supabase = supabaseServer();
+    const { data, error } = await supabase.auth.getUser();
+    if (!data.user) throw new Error("Not Authenticated");
+
+    const existingDocument = await db
+      .select()
+      .from(documents)
+      .where(eq(documents.id, id));
+    if (!existingDocument[0]) throw new Error("Not Found");
+
+    if (existingDocument[0].userId !== data.user.id)
+      throw new Error("Unauthorized");
+
+    const document = await db
+      .update(documents)
+      .set({ icon: null })
+      .where(eq(documents.id, id))
+      .returning();
+    return { data: document, error: null };
+  } catch (error) {
+    console.log(error);
+    return { data: null, error: "Something went wrong" };
+  }
+};
+
+export const removeCover = async ({ id }: { id: string }) => {
+  try {
+    const supabase = supabaseServer();
+    const { data, error } = await supabase.auth.getUser();
+    if (!data.user) throw new Error("Not Authenticated");
+
+    const existingDocument = await db
+      .select()
+      .from(documents)
+      .where(eq(documents.id, id));
+    if (!existingDocument[0]) throw new Error("Not Found");
+
+    if (existingDocument[0].userId !== data.user.id)
+      throw new Error("Unauthorized");
+
+    const document = await db
+      .update(documents)
+      .set({ coverImage: null })
+      .where(eq(documents.id, id))
+      .returning();
+    return { data: document, error: null };
   } catch (error) {
     console.log(error);
     return { data: null, error: "Something went wrong" };

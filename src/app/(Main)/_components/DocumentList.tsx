@@ -65,12 +65,7 @@ const DocumentList = ({
   const onRedirect = (documentId: string) => {
     router.push(`/documents/${documentId}`);
   };
-  if (documents === undefined)
-    return (
-      <div className="h-full flex items-center justify-center p-4">
-        <Spinner size="default" />
-      </div>
-    );
+  if (documents === undefined) return <Item.Skeleton />;
   return (
     <>
       <p
