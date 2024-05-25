@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/sonner";
 import { ModalProvider } from "@/components/providers/modal-provider";
 import { EdgeStoreProvider } from "@/lib/edgestore";
+import { cn } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Documate",
   description: "The connected workspaces where better , faster work happens.",
@@ -18,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={cn("overflow-hidden", inter.className)}>
         <EdgeStoreProvider>
           <ThemeProvider
             attribute="class"

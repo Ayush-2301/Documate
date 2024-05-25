@@ -35,7 +35,6 @@ const DocumentsPage = () => {
         <Spinner />
       ) : (
         <>
-          {" "}
           <h2 className="text-lg font-medium">
             Welcome to {user?.split(" ")[0]}&apos;s documate
           </h2>

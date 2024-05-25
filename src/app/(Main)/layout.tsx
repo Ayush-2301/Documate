@@ -23,7 +23,7 @@ const MainLayout = async ({ children }: { children: React.ReactNode }) => {
     <div className="h-full flex">
       <InputProvider>
         <Navigation />
-        <main className="m-2 md:m-4 flex-1 h-full dark:bg-neutral-950 bg-neutral-300 ">
+        <main className="m-2 md:m-4 flex-1 h-full dark:bg-neutral-950 bg-neutral-200 rounded-t-lg ">
           <PageWrapper>
             <section className="flex-1 h-full border  bg-primary overflow-y-auto shadow-md rounded-lg">
               {children}

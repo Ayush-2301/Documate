@@ -68,7 +68,7 @@ export const Navbar = ({
     <div
       className={cn(
         "max-w-[calc(100%-32px)] w-full rounded-t-lg transition-all ease-in-out  ",
-        isMobile && "w-[calc(100%-15px)]"
+        isMobile && "max-w-[calc(100%-16px)] w-full"
       )}
     >
       <nav className="bg-primary dark:bg-[#1f1f1f] px-3 py-2 w-full rounded-t-lg flex items-center gap-x-4   ">
