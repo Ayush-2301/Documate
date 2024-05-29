@@ -8,6 +8,7 @@ import { Title } from "./Title";
 import { Banner } from "./Banner";
 import { cn } from "@/lib/utils";
 import { supabaseBrowser } from "@/lib/supabase/browser";
+import { Avatars } from "@/components/Avatars";
 import { Menu } from "./Menu";
 
 interface NavbarProps {
@@ -34,7 +35,7 @@ export const Navbar = ({
 
   useEffect(() => {
     const channel = supabase
-      .channel("realtime documents navbar")
+      .channel(`realtime documents navbar`)
       .on(
         "postgres_changes",
         {
@@ -55,7 +56,7 @@ export const Navbar = ({
 
   if (document === undefined)
     return (
-      <nav className="bg-primary dark:bg-[#1f1f1f] px-3 py-2 max-w-[calc(100%-32px)] w-full flex items-center   rounded-t-lg justify-between">
+      <nav className="bg-primary dark:bg-[#1f1f1f] px-3 py-2  w-full flex items-center  justify-between">
         <Title.Skeleton />
         <div className="flex items-center gap-x-2">
           <Menu.Sketeton />
@@ -67,11 +68,11 @@ export const Navbar = ({
   return (
     <div
       className={cn(
-        "max-w-[calc(100%-32px)] w-full rounded-t-lg transition-all ease-in-out  ",
-        isMobile && "max-w-[calc(100%-16px)] w-full"
+        " w-full transition-all ease-in-out border-t  border-neutral-100  dark:border-none ",
+        isMobile && "w-full"
       )}
     >
-      <nav className="bg-primary dark:bg-[#1f1f1f] px-3 py-2 w-full rounded-t-lg flex items-center gap-x-4   ">
+      <nav className="dark:bg-primary bg-background  px-3 py-2 w-full  flex items-center gap-x-4   ">
         {isCollapsed && (
           <MenuIcon
             role="button"
@@ -83,6 +84,7 @@ export const Navbar = ({
           <Title initialData={document} />
           <div className="flex items-center gap-x-2">
             <Menu documentId={document.id} />
+            <Avatars />
           </div>
         </div>
       </nav>

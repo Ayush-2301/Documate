@@ -1,4 +1,3 @@
-// utils/debouncedUpdate.ts
 import { debounce } from "lodash";
 import { update } from "@/lib/supabase/queries";
 
@@ -9,7 +8,7 @@ const debouncedUpdate = debounce(
       console.error("Error updating document:", error);
     }
   },
-  200, // Debounce delay in milliseconds
+  100,
   { leading: true, trailing: true }
 );
 

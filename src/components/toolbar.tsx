@@ -56,7 +56,6 @@ export const Toolbar = ({ initalData, preview }: ToolabarProps) => {
   const onRemoveIcon = () => {
     async function remove() {
       const res = await removeIcon({ id: initalData.id });
-      console.log(res);
     }
     remove();
   };
@@ -73,7 +72,6 @@ export const Toolbar = ({ initalData, preview }: ToolabarProps) => {
             table: "documents",
           },
           (payload) => {
-            console.log("page", payload);
             setValue(payload.new.title);
           }
         )
@@ -85,7 +83,7 @@ export const Toolbar = ({ initalData, preview }: ToolabarProps) => {
     }
   }, [supabase, isEditing]);
   return (
-    <div className="md:pl-0 pl-[54px] group relative">
+    <div className="md:pl-10 pl-[54px] group relative">
       {!!initalData.icon && !preview && (
         <div className="flex items-center gap-x-2 group/icon pt-6">
           <IconPicker onChange={onIconSelect}>

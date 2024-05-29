@@ -73,7 +73,7 @@ const Item = ({
             if (!expanded) {
               onExpand?.();
             }
-            // if (data) router.push(`/document/${data[0].insertedId}`);
+            if (data) router.push(`/documents/${data[0].insertedId}`);
           }
         );
 
@@ -92,6 +92,7 @@ const Item = ({
       try {
         await archive(documentId);
         toast.success("Note moved to trash!");
+        router.push("/documents");
       } catch (error) {
         console.log(error);
         toast.error("Failed to archive note.");
