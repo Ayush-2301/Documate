@@ -6,6 +6,8 @@ import { Toolbar } from "@/components/toolbar";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { Cover } from "@/components/cover";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CollaborativeEditor } from "@/components/CollaborativeEditor";
+
 interface DocumentIdProps {
   params: {
     documentId: string;
@@ -67,6 +69,7 @@ const DocumentIdPage = ({ params }: DocumentIdProps) => {
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         <Toolbar initalData={document} />
       </div>
+      <CollaborativeEditor />
     </div>
   );
 };

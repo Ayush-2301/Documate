@@ -4,6 +4,8 @@ import InputProvider from "@/components/providers/input-provider";
 import { redirect } from "next/navigation";
 import Navigation from "./_components/Navigation";
 import PageWrapper from "./_components/PageWrapper";
+import { Room } from "@/components/room";
+
 const MainLayout = async ({ children }: { children: React.ReactNode }) => {
   const supabase = supabaseServer();
   let isLoading = true;
@@ -21,16 +23,16 @@ const MainLayout = async ({ children }: { children: React.ReactNode }) => {
   if (!isAuthenticated) return redirect("/");
   return (
     <div className="h-full flex">
-      <InputProvider>
-        <Navigation />
-        <main className="m-2 md:m-4 flex-1 h-full dark:bg-neutral-950 bg-neutral-200 rounded-t-lg ">
+      <Room>
+        <InputProvider>
+          <Navigation />
           <PageWrapper>
-            <section className="flex-1 h-full border  bg-primary overflow-y-auto shadow-md rounded-lg">
+            <section className="flex-1 h-full   dark:bg-primary bg-background overflow-y-auto ">
               {children}
             </section>
           </PageWrapper>
-        </main>
-      </InputProvider>
+        </InputProvider>
+      </Room>
     </div>
   );
 };

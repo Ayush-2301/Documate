@@ -6,8 +6,10 @@ import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { Spinner } from "@/components/spinner";
+import { useRouter } from "next/navigation";
 
 const DocumentsPage = () => {
+  const router = useRouter();
   const supabase = supabaseBrowser();
   const [user, setUser] = useState<string | undefined>();
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -22,8 +24,9 @@ const DocumentsPage = () => {
   }, [supabase.auth]);
   const onCreate = async () => {
     try {
-      await createDocuments({ title: "Untitled" });
+      const res = await createDocuments({ title: "Untitled" });
       toast.success("Document created successfully");
+      if (res.data) router.push(`documents/${res.data[0].insertedId}`);
     } catch (error) {
       toast.error("Error creating document");
     }

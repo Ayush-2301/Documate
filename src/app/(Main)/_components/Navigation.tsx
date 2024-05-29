@@ -41,7 +41,6 @@ const Navigation = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
-  // const [documents, setDocuments] = useState<Document[] | null>();
 
   useEffect(() => {
     if (isMobile) collapse();
@@ -56,7 +55,7 @@ const Navigation = () => {
 
   useEffect(() => {
     const channel = supabase
-      .channel("realtime-documents")
+      .channel(`realtime-documents`)
       .on(
         "postgres_changes",
         {
@@ -76,8 +75,9 @@ const Navigation = () => {
   }, [supabase, router]);
   const onCreate = async () => {
     try {
-      await createDocuments({ title: "Untitled" });
+      const res = await createDocuments({ title: "Untitled" });
       toast.success("Document created successfully");
+      if (res.data) router.push(`/documents/${res.data[0].insertedId}`);
     } catch (error) {
       toast.error("Error creating document");
     }
@@ -139,7 +139,7 @@ const Navigation = () => {
       <aside
         ref={sidebarRef}
         className={cn(
-          "group/sidebar h-full bg-primary overflow-y-auto relative flex w-60 flex-col z-[99999] shadow-md",
+          "group/sidebar h-full dark:bg-primary/70 bg-background overflow-y-auto relative flex w-60 flex-col z-[99999] shadow-md border-r border-muted-foreground/10",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && "w-0"
         )}
@@ -190,7 +190,7 @@ const Navigation = () => {
       <div
         ref={navbarRef}
         className={cn(
-          "absolute top-0 z-[99999] left-60 w-[calc(100%-240px) overflow-hidden m-2 md:m-4 rounded-t-lg   ",
+          "absolute top-0 z-[99999] left-60 w-[calc(100%-240px) ",
           isResetting && "transition-all ease-in-out ",
           isMobile && "left-0 w-full"
         )}
