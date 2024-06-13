@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { createDocuments } from "@/lib/supabase/queries";
+import { createDocuments, getDocumentStatus  } from "@/lib/supabase/queries";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { PlusCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ const DocumentsPage = () => {
   const supabase = supabaseBrowser();
   const [user, setUser] = useState<string | undefined>();
   const [isLoading, setLoading] = useState<boolean>(true);
+   const [creationStatus, setCreationStatus] = useState<string | null>(null);
   useEffect(() => {
     async function getUser() {
       setLoading(true);
@@ -24,9 +25,28 @@ const DocumentsPage = () => {
   }, [supabase.auth]);
   const onCreate = async () => {
     try {
-      const res = await createDocuments({ title: "Untitled" });
-      toast.success("Document created successfully");
-      if (res.data) router.push(`documents/${res.data[0].insertedId}`);
+      const { data, error } = await createDocuments({ title: "Untitled" });
+      if (error) {
+        toast.error("Error starting document creation");
+        return;
+      }
+      const { requestId } = data!;
+
+      setCreationStatus("Processing...");
+      console.log(creationStatus);
+
+      const interval = setInterval(async () => {
+        const status = await getDocumentStatus(requestId);
+        if (status === "Completed") {
+          setCreationStatus(null);
+          toast.success("Document created successfully");
+          clearInterval(interval);
+        } else if (status === "Failed") {
+          setCreationStatus(null);
+          toast.error("Error creating document");
+          clearInterval(interval);
+        }
+      }, 5000); 
     } catch (error) {
       toast.error("Error creating document");
     }
