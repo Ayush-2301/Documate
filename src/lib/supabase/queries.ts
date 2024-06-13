@@ -16,6 +16,9 @@ export const createDocuments = async ({
     const supabase = supabaseServer();
     const { data, error } = await supabase.auth.getUser();
     if (!data.user) throw new Error("Not Authenticated");
+    setTimeout(()=>{
+      console.log("Delay");
+    },62000)
     const response = await db
       .insert(documents)
       .values({
