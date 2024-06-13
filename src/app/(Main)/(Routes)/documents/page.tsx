@@ -33,7 +33,7 @@ const DocumentsPage = () => {
       const { requestId } = data!;
 
       setCreationStatus("Processing...");
-      console.log(creationStatus);
+   
 
       const interval = setInterval(async () => {
         const status = await getDocumentStatus(requestId);
@@ -51,6 +51,7 @@ const DocumentsPage = () => {
       toast.error("Error creating document");
     }
   };
+  console.log(creationStatus);
 
   return (
     <div className="h-full flex flex-col justify-center items-center space-y-4">
