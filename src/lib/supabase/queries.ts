@@ -26,7 +26,7 @@ export const createDocuments = async ({
     status[requestId] = "Processing";
     (async () => {
       console.log("waiting");
-      await delay(15000);
+      await delay(62000);
       console.log("wait over");
 
       const response = await db
