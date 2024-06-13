@@ -1,9 +1,14 @@
 "use server";
 import { documents } from "../../../migrations/schema";
+import type { NextApiRequest, NextApiResponse } from "next";
 import db from "./db";
 import { Document } from "./supabase.types";
 import { supabaseServer } from "./server";
 import { eq, and, or, desc, asc, isNull } from "drizzle-orm";
+let status: Record<string, string> = {};
+function generateUniqueId() {
+  return '_' + Math.random().toString(36).substr(2, 9);
+}
 
 export const createDocuments = async ({
   title,
@@ -12,30 +17,50 @@ export const createDocuments = async ({
   title: string;
   parentDocument?: string;
 }) => {
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
   try {
     const supabase = supabaseServer();
     const { data, error } = await supabase.auth.getUser();
     if (!data.user) throw new Error("Not Authenticated");
-    setTimeout(()=>{
-      console.log("Delay");
-    },62000)
-    const response = await db
-      .insert(documents)
-      .values({
-        title: title,
-        parentDocument: parentDocument,
-        userId: data.user.id,
-        isArchived: false,
-        isPublished: false,
-      })
-      .returning({ insertedId: documents.id });
+    const requestId = generateUniqueId();
+    status[requestId] = "Processing";
+    (async () => {
+      await delay(62000);
 
-    return { data: response, error: null };
+      const response = await db
+        .insert(documents)
+        .values({
+          title: title,
+          parentDocument: parentDocument,
+          userId: data.user.id,
+          isArchived: false,
+          isPublished: false,
+        })
+        .returning({ insertedId: documents.id });
+
+      status[requestId] = response ? "Completed" : "Failed";
+    })();
+
+    return { data: { requestId }, error: null };
   } catch (error) {
     console.log(error);
     return { data: null, error: error };
   }
 };
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const { requestId } = req.query;
+  if (typeof requestId === "string") {
+    const currentStatus = status[requestId];
+    res.status(200).json({ status: currentStatus });
+  } else {
+    res.status(400).json({ error: "Invalid request ID" });
+  }
+}
 
 export const getSearch = async (): Promise<{
   data: Document[] | null;
