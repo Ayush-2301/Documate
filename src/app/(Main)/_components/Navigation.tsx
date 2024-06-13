@@ -77,7 +77,7 @@ const Navigation = () => {
     try {
       const res = await createDocuments({ title: "Untitled" });
       toast.success("Document created successfully");
-      if (res.data) router.push(`/documents/${res.data[0].insertedId}`);
+      // if (res.data) router.push(`/documents/${res.data[0].insertedId}`);
     } catch (error) {
       toast.error("Error creating document");
     }
