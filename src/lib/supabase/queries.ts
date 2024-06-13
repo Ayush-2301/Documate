@@ -1,6 +1,5 @@
 "use server";
 import { documents } from "../../../migrations/schema";
-import type { NextApiRequest, NextApiResponse } from "next";
 import db from "./db";
 import { Document } from "./supabase.types";
 import { supabaseServer } from "./server";
@@ -49,18 +48,9 @@ export const createDocuments = async ({
   }
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { requestId } = req.query;
-  if (typeof requestId === "string") {
-    const currentStatus = status[requestId];
-    res.status(200).json({ status: currentStatus });
-  } else {
-    res.status(400).json({ error: "Invalid request ID" });
-  }
-}
+export const getDocumentStatus = async (requestId: string) => {
+  return status[requestId];
+};
 
 export const getSearch = async (): Promise<{
   data: Document[] | null;
