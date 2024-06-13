@@ -25,7 +25,9 @@ export const createDocuments = async ({
     const requestId = generateUniqueId();
     status[requestId] = "Processing";
     (async () => {
+      console.log("waiting");
       await delay(62000);
+      console.log("wait over");
 
       const response = await db
         .insert(documents)
