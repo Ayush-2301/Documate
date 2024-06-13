@@ -73,7 +73,7 @@ const Item = ({
             if (!expanded) {
               onExpand?.();
             }
-            if (data) router.push(`/documents/${data[0].insertedId}`);
+            // if (data) router.push(`/documents/${data[0].insertedId}`);
           }
         );
 
